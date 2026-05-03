@@ -1,0 +1,17 @@
+baler_type,stage,sequence_order,required_hours
+HB550,press,1,3
+HB550,welding,2,36
+HB550,spraying,3,7
+HB550,assembling,4,15
+HB60,press,1,1
+HB60,welding,2,6
+HB60,spraying,3,3
+HB60,assembling,4,5
+SC3000,press,1,1
+SC3000,welding,2,32
+SC3000,spraying,3,4
+SC3000,assembling,4,10
+MC32STD,press,1,4
+MC32STD,welding,2,30
+MC32STD,spraying,3,18
+MC32STD,assembling,4,25

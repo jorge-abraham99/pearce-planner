@@ -1,0 +1,19 @@
+[project]
+name = "pearce-planner-backend"
+version = "0.1.0"
+description = "FastAPI scheduling demo for Pearce baler delivery promises"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi==0.115.12",
+  "uvicorn[standard]==0.34.2",
+  "pydantic==2.11.4",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest==8.3.5",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

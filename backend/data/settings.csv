@@ -1,0 +1,4 @@
+setting,value
+start_date,2026-05-03
+planning_granularity,day
+default_buffer_percentage,10

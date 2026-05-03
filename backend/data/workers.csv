@@ -1,0 +1,9 @@
+worker_id,worker_name,skill,hours_per_week
+W1,Welder 1,welding,50
+W2,Welder 2,welding,45
+W3,Welder 3,welding,40
+S1,Sprayer 1,spraying,45
+S2,Sprayer 2,spraying,40
+A1,Assembler 1,assembling,40
+A2,Assembler 2,assembling,40
+A3,Assembler 2,assembling,40
