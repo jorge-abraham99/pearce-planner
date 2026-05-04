@@ -8,7 +8,7 @@ import { CurrentOrdersTable } from "@/components/CurrentOrdersTable";
 import { DataTables } from "@/components/DataTables";
 import { ScheduleResult } from "@/components/ScheduleResult";
 import { ScheduleTable } from "@/components/ScheduleTable";
-import { getBalerTypes, getTables, scheduleBaler } from "@/lib/api";
+import { deleteOrder, getBalerTypes, getTables, scheduleBaler, updateStartDate } from "@/lib/api";
 import type { ScheduleResult as ScheduleResultType, TablesResponse } from "@/lib/types";
 
 export default function Home() {
@@ -18,6 +18,8 @@ export default function Home() {
   const [result, setResult] = useState<ScheduleResultType | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSavingStartDate, setIsSavingStartDate] = useState(false);
+  const [deletingOrderId, setDeletingOrderId] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadInitialData() {
@@ -52,6 +54,36 @@ export default function Home() {
     }
   }
 
+  async function handleDeleteOrder(orderId: string) {
+    setDeletingOrderId(orderId);
+    setError(null);
+    try {
+      setTables(await deleteOrder(orderId));
+      setResult(null);
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Unable to delete order.");
+    } finally {
+      setDeletingOrderId(null);
+    }
+  }
+
+  async function handleStartDateChange(startDate: string) {
+    if (!startDate) {
+      return;
+    }
+
+    setIsSavingStartDate(true);
+    setError(null);
+    try {
+      setTables(await updateStartDate(startDate));
+      setResult(null);
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Unable to update start date.");
+    } finally {
+      setIsSavingStartDate(false);
+    }
+  }
+
   return (
     <main>
       <header className="app-header">
@@ -72,7 +104,15 @@ export default function Home() {
         </div>
       ) : null}
 
-      <CurrentOrdersTable orders={tables?.orders ?? []} isLoading={!tables && !error} />
+      <CurrentOrdersTable
+        orders={tables?.orders ?? []}
+        isLoading={!tables && !error}
+        startDate={tables?.settings.start_date ?? ""}
+        isSavingStartDate={isSavingStartDate}
+        deletingOrderId={deletingOrderId}
+        onStartDateChange={handleStartDateChange}
+        onDeleteOrder={handleDeleteOrder}
+      />
 
       <div className="layout-grid">
         <BalerSelector

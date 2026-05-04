@@ -34,3 +34,16 @@ export async function scheduleBaler(balerType: string): Promise<ScheduleResult> 
     body: JSON.stringify({ baler_type: balerType }),
   });
 }
+
+export async function deleteOrder(orderId: string): Promise<TablesResponse> {
+  return request<TablesResponse>(`/orders/${encodeURIComponent(orderId)}`, {
+    method: "DELETE",
+  });
+}
+
+export async function updateStartDate(startDate: string): Promise<TablesResponse> {
+  return request<TablesResponse>("/settings/start-date", {
+    method: "PUT",
+    body: JSON.stringify({ start_date: startDate }),
+  });
+}

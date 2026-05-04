@@ -7,6 +7,10 @@ class ScheduleRequest(BaseModel):
     baler_type: str
 
 
+class StartDateRequest(BaseModel):
+    start_date: date
+
+
 class NewOrder(BaseModel):
     order_id: str
     baler_type: str

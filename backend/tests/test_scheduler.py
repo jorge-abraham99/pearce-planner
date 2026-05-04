@@ -1,7 +1,7 @@
 import unittest
 from datetime import date
 
-from app.csv_loader import load_labour_requirements, load_orders, load_settings, load_workers
+from app.csv_loader import delete_order, load_labour_requirements, load_orders, load_settings, load_workers, save_orders, update_start_date
 from app.scheduler import (
     build_daily_capacity,
     build_daily_stage_limits,
@@ -14,6 +14,14 @@ from app.scheduler import (
 
 
 class SchedulerTests(unittest.TestCase):
+    def setUp(self):
+        self.original_orders = load_orders()
+        self.original_settings = load_settings()
+
+    def tearDown(self):
+        save_orders(self.original_orders)
+        update_start_date(date.fromisoformat(self.original_settings["start_date"]))
+
     def test_baler_types_include_all_demo_products(self):
         self.assertEqual(get_baler_types(load_labour_requirements()), ["HB550", "HB60", "MC32STD", "SC3000"])
 
@@ -97,6 +105,30 @@ class SchedulerTests(unittest.TestCase):
                 load_orders(),
                 load_settings(),
             )
+
+    def test_delete_order_removes_order_from_csv(self):
+        save_orders(
+            [
+                {
+                    "order_id": "O001",
+                    "baler_type": "HB550",
+                    "quantity": 1,
+                    "priority": 1,
+                    "status": "current",
+                    "earliest_completion_date": "2026-05-09",
+                    "recommended_promise_date": "2026-05-10",
+                }
+            ]
+        )
+
+        delete_order("O001")
+
+        self.assertEqual(load_orders(), [])
+
+    def test_update_start_date_persists_setting(self):
+        update_start_date(date(2026, 5, 20))
+
+        self.assertEqual(load_settings()["start_date"], "2026-05-20")
 
 
 if __name__ == "__main__":

@@ -25,7 +25,8 @@ body {
 }
 
 button,
-select {
+select,
+input {
   font: inherit;
 }
 
@@ -134,7 +135,8 @@ label {
   font-weight: 700;
 }
 
-select {
+select,
+input {
   width: 100%;
   min-height: 44px;
   border: 1px solid #b9c5c2;
@@ -166,6 +168,38 @@ button:hover {
 button:disabled {
   cursor: not-allowed;
   opacity: 0.58;
+}
+
+.order-book-actions {
+  display: flex;
+  align-items: end;
+  gap: 16px;
+}
+
+.order-book-actions label {
+  min-width: 190px;
+}
+
+.actions-cell {
+  width: 52px;
+  text-align: right;
+}
+
+.icon-button {
+  width: 34px;
+  height: 34px;
+  min-height: 34px;
+  padding: 0;
+}
+
+.danger-button {
+  background: #fff7f5;
+  color: var(--danger);
+  border: 1px solid #ffd8d1;
+}
+
+.danger-button:hover {
+  background: #ffe7e1;
 }
 
 .result-grid {
@@ -367,6 +401,12 @@ dd {
   .tables-grid,
   .result-grid {
     grid-template-columns: 1fr;
+  }
+
+  .section-heading,
+  .order-book-actions {
+    align-items: stretch;
+    flex-direction: column;
   }
 
   .assumptions ul,

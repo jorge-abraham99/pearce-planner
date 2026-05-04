@@ -1,8 +1,17 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.csv_loader import append_order, load_all_tables, load_labour_requirements, load_orders, load_settings, load_workers
-from app.models import BalerTypesResponse, ScheduleRequest, ScheduleResult, TablesResponse
+from app.csv_loader import (
+    append_order,
+    delete_order,
+    load_all_tables,
+    load_labour_requirements,
+    load_orders,
+    load_settings,
+    load_workers,
+    update_start_date,
+)
+from app.models import BalerTypesResponse, ScheduleRequest, ScheduleResult, StartDateRequest, TablesResponse
 from app.scheduler import get_baler_types, schedule_new_order
 from app.settings import get_allowed_origins
 
@@ -31,6 +40,21 @@ def baler_types() -> BalerTypesResponse:
 @app.get("/tables", response_model=TablesResponse)
 def tables() -> dict:
     return load_all_tables()
+
+
+@app.put("/settings/start-date", response_model=TablesResponse)
+def set_start_date(request: StartDateRequest) -> dict:
+    update_start_date(request.start_date)
+    return load_all_tables()
+
+
+@app.delete("/orders/{order_id}", response_model=TablesResponse)
+def remove_order(order_id: str) -> dict:
+    try:
+        delete_order(order_id)
+        return load_all_tables()
+    except ValueError as error:
+        raise HTTPException(status_code=404, detail=str(error)) from error
 
 
 @app.post("/schedule", response_model=ScheduleResult)

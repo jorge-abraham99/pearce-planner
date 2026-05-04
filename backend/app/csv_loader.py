@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+from datetime import date
 from typing import Any
 
 from app.settings import DATA_DIR
@@ -15,6 +16,8 @@ ORDER_COLUMNS = [
     "earliest_completion_date",
     "recommended_promise_date",
 ]
+
+SETTING_COLUMNS = ["setting", "value"]
 
 
 class CSVValidationError(ValueError):
@@ -33,7 +36,11 @@ def _load_csv(filename: str, required_columns: set[str]) -> list[dict[str, str]]
         if missing:
             missing_list = ", ".join(sorted(missing))
             raise CSVValidationError(f"{filename} is missing columns: {missing_list}")
-        return [dict(row) for row in reader]
+        return [
+            dict(row)
+            for row in reader
+            if any((value or "").strip() for value in row.values())
+        ]
 
 
 def load_labour_requirements() -> list[dict[str, Any]]:
@@ -95,9 +102,42 @@ def append_order(order: dict[str, Any]) -> None:
         writer.writerow({column: order.get(column, "") for column in ORDER_COLUMNS})
 
 
+def save_orders(orders: list[dict[str, Any]]) -> None:
+    path = DATA_DIR / "orders.csv"
+    with path.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=ORDER_COLUMNS)
+        writer.writeheader()
+        for order in orders:
+            writer.writerow({column: order.get(column, "") for column in ORDER_COLUMNS})
+
+
+def delete_order(order_id: str) -> None:
+    orders = load_orders()
+    remaining_orders = [order for order in orders if order["order_id"] != order_id]
+    if len(remaining_orders) == len(orders):
+        raise ValueError(f"Unknown order ID: {order_id}")
+    save_orders(remaining_orders)
+
+
 def load_settings() -> dict[str, str]:
     rows = _load_csv("settings.csv", {"setting", "value"})
     return {row["setting"]: row["value"] for row in rows}
+
+
+def save_settings(settings: dict[str, str]) -> None:
+    path = DATA_DIR / "settings.csv"
+    with path.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=SETTING_COLUMNS)
+        writer.writeheader()
+        for setting, value in settings.items():
+            writer.writerow({"setting": setting, "value": value})
+
+
+def update_start_date(start_date: date) -> dict[str, str]:
+    settings = load_settings()
+    settings["start_date"] = start_date.isoformat()
+    save_settings(settings)
+    return settings
 
 
 def load_all_tables() -> dict[str, Any]:
