@@ -12,6 +12,7 @@ Detailed context:
 
 - `backend/README.md`
 - `frontend/README.md`
+- `DEPLOY.md`
 
 ## Run Locally
 

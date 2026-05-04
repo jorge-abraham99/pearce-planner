@@ -1,0 +1,6 @@
+node_modules/
+.next/
+Dockerfile
+fly.toml
+npm-debug.log*
+.DS_Store

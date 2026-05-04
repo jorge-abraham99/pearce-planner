@@ -141,3 +141,7 @@ uvicorn app.main:app --port 8000
 cd backend
 .venv/bin/python -m pytest
 ```
+
+## Deploy
+
+See `../DEPLOY.md`.

@@ -98,6 +98,10 @@ cd frontend
 npm run build
 ```
 
+## Deploy
+
+See `../DEPLOY.md`.
+
 ## Design Notes
 
 This is an operational planning screen, not a marketing page. Keep changes practical:
